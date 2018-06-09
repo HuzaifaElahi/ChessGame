@@ -5,7 +5,7 @@ package model;
 
 import java.util.*;
 
-// line 34 "RestoApp v3.ump"
+// line 35 "RestoApp v3.ump"
 public class Player
 {
 
@@ -108,7 +108,7 @@ public class Player
     return 16;
   }
 
-  public SpecificChessPiece addSpecificChessPiece(boolean aIsLive, int aCurrentX, int aCurrentY, ChessPieceGeneral aChessPieceGeneral, BoardSquare aBoardSquare)
+  public SpecificChessPiece addSpecificChessPiece(boolean aIsLive, int aCurrentX, int aCurrentY, boolean aPlayer1, ChessPieceGeneral aChessPieceGeneral, BoardSquare aBoardSquare)
   {
     if (numberOfSpecificChessPieces() >= maximumNumberOfSpecificChessPieces())
     {
@@ -116,7 +116,7 @@ public class Player
     }
     else
     {
-      return new SpecificChessPiece(aIsLive, aCurrentX, aCurrentY, aChessPieceGeneral, aBoardSquare, this);
+      return new SpecificChessPiece(aIsLive, aCurrentX, aCurrentY, aPlayer1, aChessPieceGeneral, aBoardSquare, this);
     }
   }
 

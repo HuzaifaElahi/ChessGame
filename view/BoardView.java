@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -23,12 +24,13 @@ import model.SpecificChessPiece;
 import controller.Controller;
 
 public class BoardView extends JFrame {
-	Chess chess = new Chess();
+	Board board = new Board();
+	Chess chess = board.getChess();
 	Player player1 = new Player("p1", chess);
 	Player player2 = new Player("p2", chess);
 	Player currentPlayer = player1;
 	JPanel panel;
-	Board board = new Board();
+	
 	HashMap<JButton, BoardSquare> tiles = new HashMap<JButton, BoardSquare>();
 	HashMap<BoardSquare, JButton> buttons = new HashMap<BoardSquare, JButton>(); 
 	ArrayList<JButton> buttonList = new ArrayList<JButton>();
@@ -56,34 +58,38 @@ public class BoardView extends JFrame {
 	}
 
 	private void initPieces(Player player) {
+		Boolean isPlayer1 = false;
+		if (player==player1) {
+			isPlayer1 = true;
+		}
 		for(JButton button: buttonList) {
 			BoardSquare square = tiles.get(button);
 			//Set Pawns
 			if(((square.getY() == 2) && (player == player1)) || ((square.getY() == 7) && (player == player2))) {
-				new SpecificChessPiece(true, square.getX(), square.getY(), generalPawn, square, player);
+				new SpecificChessPiece(true, square.getX(), square.getY(), isPlayer1, generalPawn, square, player);
 			}
 			//Set Castles
 			else if(((square.getY() == 1) && (square.getX() == 1) && (player == player1) || (square.getY() == 1) && (square.getX() == 8) &&(player == player1))||
 					((square.getY() == 8) && (square.getX() == 1) && (player == player2) || (square.getY() == 8) && (square.getX() == 8) &&(player == player2))){
-				new SpecificChessPiece(true, square.getX(), square.getY(), generalCastle, square, player);
+				new SpecificChessPiece(true, square.getX(), square.getY(), isPlayer1, generalCastle, square, player);
 			}
 			//Set Bishops
 			else if(((square.getY() == 1) && (square.getX() == 2) && (player == player1) || (square.getY() == 1) && (square.getX() == 7) &&(player == player1))||
 					((square.getY() == 8) && (square.getX() == 2) && (player == player2) || (square.getY() == 8) && (square.getX() == 7) &&(player == player2))) {
-				new SpecificChessPiece(true, square.getX(), square.getY(), generalBishop, square, player);
+				new SpecificChessPiece(true, square.getX(), square.getY(), isPlayer1, generalBishop, square, player);
 			}
 			//Set Knights
 			else if(((square.getY() == 1) && (square.getX() == 3) && (player == player1) || (square.getY() == 1) && (square.getX() == 6) &&(player == player1))||
 					((square.getY() == 8) && (square.getX() == 3) && (player == player2) || (square.getY() == 8) && (square.getX() == 6) &&(player == player2))) {
-				new SpecificChessPiece(true, square.getX(), square.getY(), generalKnight, square, player);
+				new SpecificChessPiece(true, square.getX(), square.getY(), isPlayer1, generalKnight, square, player);
 			}
 			//Set King
 			else if(((square.getY() == 1) && (square.getX() == 4) && (player == player1)||((square.getY() == 8) && (square.getX() == 5) && (player == player2)))) {
-				new SpecificChessPiece(true, square.getX(), square.getY(), generalKing, square, player);
-			}
+				new SpecificChessPiece(true, square.getX(), square.getY(), isPlayer1, generalKing, square, player);
+			} 
 			//Set Queen
 			else if(((square.getY() == 1) && (square.getX() == 5) && (player == player1)||((square.getY() == 8) && (square.getX() == 4) && (player == player2)))) {
-				new SpecificChessPiece(true, square.getX(), square.getY(), generalQueen, square, player);
+				new SpecificChessPiece(true, square.getX(), square.getY(), isPlayer1, generalQueen, square, player);
 			}
 
 			if(square.hasSpecificChessPiece()) {
@@ -109,13 +115,14 @@ public class BoardView extends JFrame {
 	private void moveAlgorithm(SpecificChessPiece piece) {
 		switch(piece.getChessPieceGeneral().getName()) {
 		case "Pawn":
-			if(currentPlayer == player1) {
-				BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY(), chess.getBoard());
+			if(piece.isPlayer1()) {
+				BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+1, board);
 				JButton thisButton = buttons.get(thisSquare);
 				thisButton.setBackground(Color.GREEN);
 			}
 		}
 	}
+	
 	
 	private void refreshData() {
 

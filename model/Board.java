@@ -4,7 +4,7 @@ package model;
 
 import java.util.*;
 
-// line 21 "RestoApp v3.ump"
+// line 22 "RestoApp v3.ump"
 public class Board
 {
 

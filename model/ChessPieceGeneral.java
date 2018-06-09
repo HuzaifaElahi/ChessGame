@@ -98,9 +98,9 @@ public class ChessPieceGeneral
     return 1;
   }
 
-  public SpecificChessPiece addSpecificChessPiece(boolean aIsLive, int aCurrentX, int aCurrentY, BoardSquare aBoardSquare, Player aPlayer)
+  public SpecificChessPiece addSpecificChessPiece(boolean aIsLive, int aCurrentX, int aCurrentY, boolean aPlayer1, BoardSquare aBoardSquare, Player aPlayer)
   {
-    SpecificChessPiece aNewSpecificChessPiece = new SpecificChessPiece(aIsLive, aCurrentX, aCurrentY, this, aBoardSquare, aPlayer);
+    SpecificChessPiece aNewSpecificChessPiece = new SpecificChessPiece(aIsLive, aCurrentX, aCurrentY, aPlayer1, this, aBoardSquare, aPlayer);
     return aNewSpecificChessPiece;
   }
 

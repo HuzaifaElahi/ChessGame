@@ -16,6 +16,7 @@ class SpecificChessPiece
   Boolean isLive;
   Integer currentX;
   Integer currentY;
+  Boolean player1;
 }
 
 class Board

@@ -16,6 +16,7 @@ public class SpecificChessPiece
   private boolean isLive;
   private int currentX;
   private int currentY;
+  private boolean player1;
 
   //SpecificChessPiece Associations
   private ChessPieceGeneral chessPieceGeneral;
@@ -26,11 +27,12 @@ public class SpecificChessPiece
   // CONSTRUCTOR
   //------------------------
 
-  public SpecificChessPiece(boolean aIsLive, int aCurrentX, int aCurrentY, ChessPieceGeneral aChessPieceGeneral, BoardSquare aBoardSquare, Player aPlayer)
+  public SpecificChessPiece(boolean aIsLive, int aCurrentX, int aCurrentY, boolean aPlayer1, ChessPieceGeneral aChessPieceGeneral, BoardSquare aBoardSquare, Player aPlayer)
   {
     isLive = aIsLive;
     currentX = aCurrentX;
     currentY = aCurrentY;
+    player1 = aPlayer1;
     boolean didAddChessPieceGeneral = setChessPieceGeneral(aChessPieceGeneral);
     if (!didAddChessPieceGeneral)
     {
@@ -76,6 +78,14 @@ public class SpecificChessPiece
     return wasSet;
   }
 
+  public boolean setPlayer1(boolean aPlayer1)
+  {
+    boolean wasSet = false;
+    player1 = aPlayer1;
+    wasSet = true;
+    return wasSet;
+  }
+
   public boolean getIsLive()
   {
     return isLive;
@@ -91,9 +101,19 @@ public class SpecificChessPiece
     return currentY;
   }
 
+  public boolean getPlayer1()
+  {
+    return player1;
+  }
+
   public boolean isIsLive()
   {
     return isLive;
+  }
+
+  public boolean isPlayer1()
+  {
+    return player1;
   }
 
   public ChessPieceGeneral getChessPieceGeneral()
@@ -228,7 +248,8 @@ public class SpecificChessPiece
     return super.toString() + "["+
             "isLive" + ":" + getIsLive()+ "," +
             "currentX" + ":" + getCurrentX()+ "," +
-            "currentY" + ":" + getCurrentY()+ "]" + System.getProperties().getProperty("line.separator") +
+            "currentY" + ":" + getCurrentY()+ "," +
+            "player1" + ":" + getPlayer1()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "chessPieceGeneral = "+(getChessPieceGeneral()!=null?Integer.toHexString(System.identityHashCode(getChessPieceGeneral())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "boardSquare = "+(getBoardSquare()!=null?Integer.toHexString(System.identityHashCode(getBoardSquare())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "player = "+(getPlayer()!=null?Integer.toHexString(System.identityHashCode(getPlayer())):"null");
