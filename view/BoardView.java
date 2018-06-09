@@ -25,12 +25,13 @@ public class BoardView extends JFrame {
 	Chess chess = new Chess();
 	Player player1 = new Player("p1", chess);
 	Player player2 = new Player("p2", chess);
+	Player currentPlayer;
 	JPanel panel;
 	Board board = new Board();
 	HashMap<JButton, BoardSquare> tiles = new HashMap<JButton, BoardSquare>();
 	HashMap<BoardSquare, JButton> buttons = new HashMap<BoardSquare, JButton>(); 
 	ArrayList<JButton> buttonList = new ArrayList<JButton>();
-	
+
 	//Make Piece Templates
 	ChessPieceGeneral generalPawn = new ChessPieceGeneral("Pawn", chess);
 	ChessPieceGeneral generalKnight = new ChessPieceGeneral("Knight", chess);
@@ -58,38 +59,35 @@ public class BoardView extends JFrame {
 			BoardSquare square = tiles.get(button);
 			//Set Pawns
 			if(((square.getY() == 2) && (player == player1)) || ((square.getY() == 7) && (player == player2))) {
-				SpecificChessPiece aSpecificPawn = new SpecificChessPiece(true, square.getX(), square.getY(), generalPawn, square, player);
-				button.setText(aSpecificPawn.getChessPieceGeneral().getName());
+				new SpecificChessPiece(true, square.getX(), square.getY(), generalPawn, square, player);
 			}
 			//Set Castles
-			if(((square.getY() == 1) && (square.getX() == 1) && (player == player1) || (square.getY() == 1) && (square.getX() == 8) &&(player == player1))||
-				((square.getY() == 8) && (square.getX() == 1) && (player == player2) || (square.getY() == 8) && (square.getX() == 8) &&(player == player2))){
-				SpecificChessPiece aSpecificCastle = new SpecificChessPiece(true, square.getX(), square.getY(), generalCastle, square, player);
-				button.setText(aSpecificCastle.getChessPieceGeneral().getName());
+			else if(((square.getY() == 1) && (square.getX() == 1) && (player == player1) || (square.getY() == 1) && (square.getX() == 8) &&(player == player1))||
+					((square.getY() == 8) && (square.getX() == 1) && (player == player2) || (square.getY() == 8) && (square.getX() == 8) &&(player == player2))){
+				new SpecificChessPiece(true, square.getX(), square.getY(), generalCastle, square, player);
 			}
 			//Set Bishops
-			if(((square.getY() == 1) && (square.getX() == 2) && (player == player1) || (square.getY() == 1) && (square.getX() == 7) &&(player == player1))||
-				((square.getY() == 8) && (square.getX() == 2) && (player == player2) || (square.getY() == 8) && (square.getX() == 7) &&(player == player2))) {
-				SpecificChessPiece aSpecificBishop = new SpecificChessPiece(true, square.getX(), square.getY(), generalBishop, square, player);
-				button.setText(aSpecificBishop.getChessPieceGeneral().getName());
+			else if(((square.getY() == 1) && (square.getX() == 2) && (player == player1) || (square.getY() == 1) && (square.getX() == 7) &&(player == player1))||
+					((square.getY() == 8) && (square.getX() == 2) && (player == player2) || (square.getY() == 8) && (square.getX() == 7) &&(player == player2))) {
+				new SpecificChessPiece(true, square.getX(), square.getY(), generalBishop, square, player);
 			}
 			//Set Knights
-			if(((square.getY() == 1) && (square.getX() == 3) && (player == player1) || (square.getY() == 1) && (square.getX() == 6) &&(player == player1))||
-				((square.getY() == 8) && (square.getX() == 3) && (player == player2) || (square.getY() == 8) && (square.getX() == 6) &&(player == player2))) {
-				SpecificChessPiece aSpecificKnight = new SpecificChessPiece(true, square.getX(), square.getY(), generalKnight, square, player);
-				button.setText(aSpecificKnight.getChessPieceGeneral().getName());
+			else if(((square.getY() == 1) && (square.getX() == 3) && (player == player1) || (square.getY() == 1) && (square.getX() == 6) &&(player == player1))||
+					((square.getY() == 8) && (square.getX() == 3) && (player == player2) || (square.getY() == 8) && (square.getX() == 6) &&(player == player2))) {
+				new SpecificChessPiece(true, square.getX(), square.getY(), generalKnight, square, player);
 			}
 			//Set King
-			if(((square.getY() == 1) && (square.getX() == 4) && (player == player1)||((square.getY() == 8) && (square.getX() == 5) && (player == player2)))) {
-				SpecificChessPiece aSpecificKing = new SpecificChessPiece(true, square.getX(), square.getY(), generalKing, square, player);
-				button.setText(aSpecificKing.getChessPieceGeneral().getName());
+			else if(((square.getY() == 1) && (square.getX() == 4) && (player == player1)||((square.getY() == 8) && (square.getX() == 5) && (player == player2)))) {
+				new SpecificChessPiece(true, square.getX(), square.getY(), generalKing, square, player);
 			}
 			//Set Queen
-			if(((square.getY() == 1) && (square.getX() == 5) && (player == player1)||((square.getY() == 8) && (square.getX() == 4) && (player == player2)))) {
-				SpecificChessPiece aSpecificQueen = new SpecificChessPiece(true, square.getX(), square.getY(), generalQueen, square, player);
-				button.setText(aSpecificQueen.getChessPieceGeneral().getName());
+			else if(((square.getY() == 1) && (square.getX() == 5) && (player == player1)||((square.getY() == 8) && (square.getX() == 4) && (player == player2)))) {
+				new SpecificChessPiece(true, square.getX(), square.getY(), generalQueen, square, player);
 			}
 
+			if(square.hasSpecificChessPiece()) {
+				button.setText(square.getSpecificChessPiece().getChessPieceGeneral().getName());
+			}
 		}		
 	}
 
@@ -106,7 +104,8 @@ public class BoardView extends JFrame {
 
 		private void moveAlgorithm(ChessPieceGeneral piece) {
 			switch(piece.getName()) {
-				
+			case "Pawn":
+				if()
 			}
 		}
 	};
