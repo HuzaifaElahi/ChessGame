@@ -1,0 +1,38 @@
+class Chess
+{
+  1 -- 8 ChessPieceGeneral;
+  1 -- 1 Board;
+  1 -- 2 Player;
+}
+
+class ChessPieceGeneral
+{
+  name;
+1 -- 1..* SpecificChessPiece;
+}
+
+class SpecificChessPiece
+{
+  Boolean isLive;
+  Integer currentX;
+  Integer currentY;
+}
+
+class Board
+{
+  1 -- 64 BoardSquare;
+}
+
+class BoardSquare
+{
+    Integer x;
+    Integer y;
+    color;
+  1 -- 0..1 SpecificChessPiece;
+}
+
+class Player
+{
+  name;
+  1 -- 16 SpecificChessPiece;
+}

@@ -1,0 +1,327 @@
+package view;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import model.Board;
+import model.BoardSquare;
+import model.Chess;
+import model.ChessPieceGeneral;
+import model.Player;
+import model.SpecificChessPiece;
+
+public class BoardView extends JFrame {
+	Chess chess = new Chess();
+	Player player1 = new Player("p1", chess);
+	Player player2 = new Player("p2", chess);
+	JPanel panel;
+	Board board = new Board();
+	HashMap<JButton, BoardSquare> tiles = new HashMap<JButton, BoardSquare>();
+	HashMap<BoardSquare, JButton> buttons = new HashMap<BoardSquare, JButton>(); 
+	ArrayList<JButton> buttonList = new ArrayList<JButton>();
+	
+	//Make Piece Templates
+	ChessPieceGeneral generalPawn = new ChessPieceGeneral("Pawn", chess);
+	ChessPieceGeneral generalKnight = new ChessPieceGeneral("Knight", chess);
+	ChessPieceGeneral generalBishop = new ChessPieceGeneral("Bishop", chess);
+	ChessPieceGeneral generalCastle = new ChessPieceGeneral("Castle", chess);
+	ChessPieceGeneral generalKing = new ChessPieceGeneral("King", chess);
+	ChessPieceGeneral generalQueen = new ChessPieceGeneral("Queen", chess);
+
+
+	public BoardView(){
+		initComponents();
+		setPieces();
+		refreshData();
+	}
+
+	private void setPieces() {
+		//Set Pieces for Players
+		initPieces(player1);	
+		initPieces(player2);
+
+	}
+
+	private void initPieces(Player player) {
+		for(JButton button: buttonList) {
+			BoardSquare square = tiles.get(button);
+			//Set Pawns
+			if(((square.getY() == 2) && (player == player1)) || ((square.getY() == 7) && (player == player2))) {
+				SpecificChessPiece aSpecificPawn = new SpecificChessPiece(true, square.getX(), square.getY(), generalPawn, square, player);
+				button.setText(aSpecificPawn.getChessPieceGeneral().getName());
+			}
+			//Set Castles
+			if(((square.getY() == 1) && (square.getX() == 1) && (player == player1) || (square.getY() == 1) && (square.getX() == 8) &&(player == player1))||
+				((square.getY() == 8) && (square.getX() == 1) && (player == player2) || (square.getY() == 8) && (square.getX() == 8) &&(player == player2))){
+				SpecificChessPiece aSpecificCastle = new SpecificChessPiece(true, square.getX(), square.getY(), generalCastle, square, player);
+				button.setText(aSpecificCastle.getChessPieceGeneral().getName());
+			}
+			//Set Bishops
+			if(((square.getY() == 1) && (square.getX() == 2) && (player == player1) || (square.getY() == 1) && (square.getX() == 7) &&(player == player1))||
+				((square.getY() == 8) && (square.getX() == 2) && (player == player2) || (square.getY() == 8) && (square.getX() == 7) &&(player == player2))) {
+				SpecificChessPiece aSpecificBishop = new SpecificChessPiece(true, square.getX(), square.getY(), generalBishop, square, player);
+				button.setText(aSpecificBishop.getChessPieceGeneral().getName());
+			}
+			//Set Knights
+			if(((square.getY() == 1) && (square.getX() == 3) && (player == player1) || (square.getY() == 1) && (square.getX() == 6) &&(player == player1))||
+				((square.getY() == 8) && (square.getX() == 3) && (player == player2) || (square.getY() == 8) && (square.getX() == 6) &&(player == player2))) {
+				SpecificChessPiece aSpecificKnight = new SpecificChessPiece(true, square.getX(), square.getY(), generalKnight, square, player);
+				button.setText(aSpecificKnight.getChessPieceGeneral().getName());
+			}
+			//Set King
+			if(((square.getY() == 1) && (square.getX() == 4) && (player == player1)||((square.getY() == 8) && (square.getX() == 5) && (player == player2)))) {
+				SpecificChessPiece aSpecificKing = new SpecificChessPiece(true, square.getX(), square.getY(), generalKing, square, player);
+				button.setText(aSpecificKing.getChessPieceGeneral().getName());
+			}
+			//Set Queen
+			if(((square.getY() == 1) && (square.getX() == 5) && (player == player1)||((square.getY() == 8) && (square.getX() == 4) && (player == player2)))) {
+				SpecificChessPiece aSpecificQueen = new SpecificChessPiece(true, square.getX(), square.getY(), generalQueen, square, player);
+				button.setText(aSpecificQueen.getChessPieceGeneral().getName());
+			}
+
+		}		
+	}
+
+	ActionListener boardListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JButton button = (JButton) e.getSource();
+			button.setBackground(Color.GREEN);
+		}
+	};
+
+	private void refreshData() {
+
+
+	}
+
+	private void generateTiles() {
+		for(int i=1;i<=8;i++) {
+			for(int j=1;j<=8;j++) {
+				String name = i + " " + j;
+				JButton button = new JButton(name);	
+				String color = getColor(i, j);
+				BoardSquare square = new BoardSquare(i, j, color, board);
+				tiles.put(button, square);
+				buttons.put(square, button);
+				board.addBoardSquare(square);
+				buttonList.add(button);
+			}
+		}
+	}
+
+	private String getColor(int i, int j) {
+		if(((i+j)%2)==0){
+			return "white";
+		}
+		else {
+			return "black";
+		}
+	}
+
+	private void initComponents() {
+		// Setting JFrame
+		setSize(2000, 1000);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		generateTiles();
+		for(int i=0;i<64;i++) {
+			if(board.getBoardSquare(i).getColor() == "black") {
+				buttons.get(board.getBoardSquare(i)).setBackground(Color.BLACK);
+			}
+			else {
+				buttons.get(board.getBoardSquare(i)).setBackground(Color.WHITE);
+			}
+			buttons.get(board.getBoardSquare(i)).setPreferredSize(new Dimension(90, 90));
+		}
+
+		// Add Action Listener to Buttons
+		for(JButton button: buttonList) {
+			button.addActionListener(boardListener);
+		}
+
+		// Set Group Layout
+		GroupLayout layout = new GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
+		panel = new JPanel(layout);
+		panel.setLayout(layout);
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+		layout.setHorizontalGroup(
+				layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup()
+						.addComponent(buttons.get(board.getBoardSquare(0)))
+						.addComponent(buttons.get(board.getBoardSquare(1)))
+						.addComponent(buttons.get(board.getBoardSquare(2)))
+						.addComponent(buttons.get(board.getBoardSquare(3)))
+						.addComponent(buttons.get(board.getBoardSquare(4)))
+						.addComponent(buttons.get(board.getBoardSquare(5)))
+						.addComponent(buttons.get(board.getBoardSquare(6)))
+						.addComponent(buttons.get(board.getBoardSquare(7))))
+				.addGroup(layout.createParallelGroup()
+						.addComponent(buttons.get(board.getBoardSquare(8)))
+						.addComponent(buttons.get(board.getBoardSquare(9)))
+						.addComponent(buttons.get(board.getBoardSquare(10)))
+						.addComponent(buttons.get(board.getBoardSquare(11)))
+						.addComponent(buttons.get(board.getBoardSquare(12)))
+						.addComponent(buttons.get(board.getBoardSquare(13)))
+						.addComponent(buttons.get(board.getBoardSquare(14)))
+						.addComponent(buttons.get(board.getBoardSquare(15))))
+				.addGroup(layout.createParallelGroup()
+						.addComponent(buttons.get(board.getBoardSquare(16)))
+						.addComponent(buttons.get(board.getBoardSquare(17)))
+						.addComponent(buttons.get(board.getBoardSquare(18)))
+						.addComponent(buttons.get(board.getBoardSquare(19)))
+						.addComponent(buttons.get(board.getBoardSquare(20)))
+						.addComponent(buttons.get(board.getBoardSquare(21)))
+						.addComponent(buttons.get(board.getBoardSquare(22)))
+						.addComponent(buttons.get(board.getBoardSquare(23))))
+				.addGroup(layout.createParallelGroup()
+						.addComponent(buttons.get(board.getBoardSquare(24)))
+						.addComponent(buttons.get(board.getBoardSquare(25)))
+						.addComponent(buttons.get(board.getBoardSquare(26)))
+						.addComponent(buttons.get(board.getBoardSquare(27)))
+						.addComponent(buttons.get(board.getBoardSquare(28)))
+						.addComponent(buttons.get(board.getBoardSquare(29)))
+						.addComponent(buttons.get(board.getBoardSquare(30)))
+						.addComponent(buttons.get(board.getBoardSquare(31))))
+				.addGroup(layout.createParallelGroup()
+						.addComponent(buttons.get(board.getBoardSquare(32)))
+						.addComponent(buttons.get(board.getBoardSquare(33)))
+						.addComponent(buttons.get(board.getBoardSquare(34)))
+						.addComponent(buttons.get(board.getBoardSquare(35)))
+						.addComponent(buttons.get(board.getBoardSquare(36)))
+						.addComponent(buttons.get(board.getBoardSquare(37)))
+						.addComponent(buttons.get(board.getBoardSquare(38)))
+						.addComponent(buttons.get(board.getBoardSquare(39))))
+				.addGroup(layout.createParallelGroup()
+						.addComponent(buttons.get(board.getBoardSquare(40)))
+						.addComponent(buttons.get(board.getBoardSquare(41)))
+						.addComponent(buttons.get(board.getBoardSquare(42)))
+						.addComponent(buttons.get(board.getBoardSquare(43)))
+						.addComponent(buttons.get(board.getBoardSquare(44)))
+						.addComponent(buttons.get(board.getBoardSquare(45)))
+						.addComponent(buttons.get(board.getBoardSquare(46)))
+						.addComponent(buttons.get(board.getBoardSquare(47))))
+				.addGroup(layout.createParallelGroup()
+						.addComponent(buttons.get(board.getBoardSquare(48)))
+						.addComponent(buttons.get(board.getBoardSquare(49)))
+						.addComponent(buttons.get(board.getBoardSquare(50)))
+						.addComponent(buttons.get(board.getBoardSquare(51)))
+						.addComponent(buttons.get(board.getBoardSquare(52)))
+						.addComponent(buttons.get(board.getBoardSquare(53)))
+						.addComponent(buttons.get(board.getBoardSquare(54)))
+						.addComponent(buttons.get(board.getBoardSquare(55))))
+				.addGroup(layout.createParallelGroup()
+						.addComponent(buttons.get(board.getBoardSquare(56)))
+						.addComponent(buttons.get(board.getBoardSquare(57)))
+						.addComponent(buttons.get(board.getBoardSquare(58)))
+						.addComponent(buttons.get(board.getBoardSquare(59)))
+						.addComponent(buttons.get(board.getBoardSquare(60)))
+						.addComponent(buttons.get(board.getBoardSquare(61)))
+						.addComponent(buttons.get(board.getBoardSquare(62)))
+						.addComponent(buttons.get(board.getBoardSquare(63)))));
+		layout.linkSize(SwingConstants.VERTICAL, new java.awt.Component[] {
+				buttons.get(board.getBoardSquare(0)),buttons.get(board.getBoardSquare(1)),buttons.get(board.getBoardSquare(2)),buttons.get(board.getBoardSquare(3)), buttons.get(board.getBoardSquare(4)), buttons.get(board.getBoardSquare(5)), buttons.get(board.getBoardSquare(6)), buttons.get(board.getBoardSquare(7)),
+				buttons.get(board.getBoardSquare(8)),buttons.get(board.getBoardSquare(9)),buttons.get(board.getBoardSquare(10)),buttons.get(board.getBoardSquare(11)), buttons.get(board.getBoardSquare(12)), buttons.get(board.getBoardSquare(13)), buttons.get(board.getBoardSquare(14)), buttons.get(board.getBoardSquare(15)),
+				buttons.get(board.getBoardSquare(16)),buttons.get(board.getBoardSquare(17)),buttons.get(board.getBoardSquare(18)),buttons.get(board.getBoardSquare(19)), buttons.get(board.getBoardSquare(20)), buttons.get(board.getBoardSquare(21)), buttons.get(board.getBoardSquare(22)), buttons.get(board.getBoardSquare(23)),
+				buttons.get(board.getBoardSquare(24)),buttons.get(board.getBoardSquare(25)),buttons.get(board.getBoardSquare(26)),buttons.get(board.getBoardSquare(27)), buttons.get(board.getBoardSquare(28)), buttons.get(board.getBoardSquare(29)), buttons.get(board.getBoardSquare(30)), buttons.get(board.getBoardSquare(31)),
+				buttons.get(board.getBoardSquare(32)),buttons.get(board.getBoardSquare(33)),buttons.get(board.getBoardSquare(34)),buttons.get(board.getBoardSquare(35)), buttons.get(board.getBoardSquare(36)), buttons.get(board.getBoardSquare(37)), buttons.get(board.getBoardSquare(38)), buttons.get(board.getBoardSquare(39)),
+				buttons.get(board.getBoardSquare(40)),buttons.get(board.getBoardSquare(41)),buttons.get(board.getBoardSquare(42)),buttons.get(board.getBoardSquare(43)), buttons.get(board.getBoardSquare(44)), buttons.get(board.getBoardSquare(45)), buttons.get(board.getBoardSquare(46)), buttons.get(board.getBoardSquare(47)),
+				buttons.get(board.getBoardSquare(48)),buttons.get(board.getBoardSquare(49)),buttons.get(board.getBoardSquare(50)),buttons.get(board.getBoardSquare(51)), buttons.get(board.getBoardSquare(52)), buttons.get(board.getBoardSquare(53)), buttons.get(board.getBoardSquare(54)), buttons.get(board.getBoardSquare(55)),
+				buttons.get(board.getBoardSquare(56)),buttons.get(board.getBoardSquare(57)),buttons.get(board.getBoardSquare(58)),buttons.get(board.getBoardSquare(59)), buttons.get(board.getBoardSquare(60)), buttons.get(board.getBoardSquare(61)), buttons.get(board.getBoardSquare(62)), buttons.get(board.getBoardSquare(63))});
+		layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {buttons.get(board.getBoardSquare(0)),buttons.get(board.getBoardSquare(1)),buttons.get(board.getBoardSquare(2)),buttons.get(board.getBoardSquare(3)), buttons.get(board.getBoardSquare(4)), buttons.get(board.getBoardSquare(5)), buttons.get(board.getBoardSquare(6)), buttons.get(board.getBoardSquare(7)),
+				buttons.get(board.getBoardSquare(8)),buttons.get(board.getBoardSquare(9)),buttons.get(board.getBoardSquare(10)),buttons.get(board.getBoardSquare(11)), buttons.get(board.getBoardSquare(12)), buttons.get(board.getBoardSquare(13)), buttons.get(board.getBoardSquare(14)), buttons.get(board.getBoardSquare(15)),
+				buttons.get(board.getBoardSquare(16)),buttons.get(board.getBoardSquare(17)),buttons.get(board.getBoardSquare(18)),buttons.get(board.getBoardSquare(19)), buttons.get(board.getBoardSquare(20)), buttons.get(board.getBoardSquare(21)), buttons.get(board.getBoardSquare(22)), buttons.get(board.getBoardSquare(23)),
+				buttons.get(board.getBoardSquare(24)),buttons.get(board.getBoardSquare(25)),buttons.get(board.getBoardSquare(26)),buttons.get(board.getBoardSquare(27)), buttons.get(board.getBoardSquare(28)), buttons.get(board.getBoardSquare(29)), buttons.get(board.getBoardSquare(30)), buttons.get(board.getBoardSquare(31)),
+				buttons.get(board.getBoardSquare(32)),buttons.get(board.getBoardSquare(33)),buttons.get(board.getBoardSquare(34)),buttons.get(board.getBoardSquare(35)), buttons.get(board.getBoardSquare(36)), buttons.get(board.getBoardSquare(37)), buttons.get(board.getBoardSquare(38)), buttons.get(board.getBoardSquare(39)),
+				buttons.get(board.getBoardSquare(40)),buttons.get(board.getBoardSquare(41)),buttons.get(board.getBoardSquare(42)),buttons.get(board.getBoardSquare(43)), buttons.get(board.getBoardSquare(44)), buttons.get(board.getBoardSquare(45)), buttons.get(board.getBoardSquare(46)), buttons.get(board.getBoardSquare(47)),
+				buttons.get(board.getBoardSquare(48)),buttons.get(board.getBoardSquare(49)),buttons.get(board.getBoardSquare(50)),buttons.get(board.getBoardSquare(51)), buttons.get(board.getBoardSquare(52)), buttons.get(board.getBoardSquare(53)), buttons.get(board.getBoardSquare(54)), buttons.get(board.getBoardSquare(55)),
+				buttons.get(board.getBoardSquare(56)),buttons.get(board.getBoardSquare(57)),buttons.get(board.getBoardSquare(58)),buttons.get(board.getBoardSquare(59)), buttons.get(board.getBoardSquare(60)), buttons.get(board.getBoardSquare(61)), buttons.get(board.getBoardSquare(62)), buttons.get(board.getBoardSquare(63))});
+		layout.setVerticalGroup(
+				layout.createParallelGroup()
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(buttons.get(board.getBoardSquare(0)))
+						.addComponent(buttons.get(board.getBoardSquare(1)))
+						.addComponent(buttons.get(board.getBoardSquare(2)))
+						.addComponent(buttons.get(board.getBoardSquare(3)))
+						.addComponent(buttons.get(board.getBoardSquare(4)))
+						.addComponent(buttons.get(board.getBoardSquare(5)))
+						.addComponent(buttons.get(board.getBoardSquare(6)))
+						.addComponent(buttons.get(board.getBoardSquare(7))))
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(buttons.get(board.getBoardSquare(8)))
+						.addComponent(buttons.get(board.getBoardSquare(9)))
+						.addComponent(buttons.get(board.getBoardSquare(10)))
+						.addComponent(buttons.get(board.getBoardSquare(11)))
+						.addComponent(buttons.get(board.getBoardSquare(12)))
+						.addComponent(buttons.get(board.getBoardSquare(13)))
+						.addComponent(buttons.get(board.getBoardSquare(14)))
+						.addComponent(buttons.get(board.getBoardSquare(15))))
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(buttons.get(board.getBoardSquare(16)))
+						.addComponent(buttons.get(board.getBoardSquare(17)))
+						.addComponent(buttons.get(board.getBoardSquare(18)))
+						.addComponent(buttons.get(board.getBoardSquare(19)))
+						.addComponent(buttons.get(board.getBoardSquare(20)))
+						.addComponent(buttons.get(board.getBoardSquare(21)))
+						.addComponent(buttons.get(board.getBoardSquare(22)))
+						.addComponent(buttons.get(board.getBoardSquare(23))))
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(buttons.get(board.getBoardSquare(24)))
+						.addComponent(buttons.get(board.getBoardSquare(25)))
+						.addComponent(buttons.get(board.getBoardSquare(26)))
+						.addComponent(buttons.get(board.getBoardSquare(27)))
+						.addComponent(buttons.get(board.getBoardSquare(28)))
+						.addComponent(buttons.get(board.getBoardSquare(29)))
+						.addComponent(buttons.get(board.getBoardSquare(30)))
+						.addComponent(buttons.get(board.getBoardSquare(31))))
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(buttons.get(board.getBoardSquare(32)))
+						.addComponent(buttons.get(board.getBoardSquare(33)))
+						.addComponent(buttons.get(board.getBoardSquare(34)))
+						.addComponent(buttons.get(board.getBoardSquare(35)))
+						.addComponent(buttons.get(board.getBoardSquare(36)))
+						.addComponent(buttons.get(board.getBoardSquare(37)))
+						.addComponent(buttons.get(board.getBoardSquare(38)))
+						.addComponent(buttons.get(board.getBoardSquare(39))))
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(buttons.get(board.getBoardSquare(40)))
+						.addComponent(buttons.get(board.getBoardSquare(41)))
+						.addComponent(buttons.get(board.getBoardSquare(42)))
+						.addComponent(buttons.get(board.getBoardSquare(43)))
+						.addComponent(buttons.get(board.getBoardSquare(44)))
+						.addComponent(buttons.get(board.getBoardSquare(45)))
+						.addComponent(buttons.get(board.getBoardSquare(46)))
+						.addComponent(buttons.get(board.getBoardSquare(47))))
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(buttons.get(board.getBoardSquare(48)))
+						.addComponent(buttons.get(board.getBoardSquare(49)))
+						.addComponent(buttons.get(board.getBoardSquare(50)))
+						.addComponent(buttons.get(board.getBoardSquare(51)))
+						.addComponent(buttons.get(board.getBoardSquare(52)))
+						.addComponent(buttons.get(board.getBoardSquare(53)))
+						.addComponent(buttons.get(board.getBoardSquare(54)))
+						.addComponent(buttons.get(board.getBoardSquare(55))))
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(buttons.get(board.getBoardSquare(56)))
+						.addComponent(buttons.get(board.getBoardSquare(57)))
+						.addComponent(buttons.get(board.getBoardSquare(58)))
+						.addComponent(buttons.get(board.getBoardSquare(59)))
+						.addComponent(buttons.get(board.getBoardSquare(60)))
+						.addComponent(buttons.get(board.getBoardSquare(61)))
+						.addComponent(buttons.get(board.getBoardSquare(62)))
+						.addComponent(buttons.get(board.getBoardSquare(63)))));
+		pack();
+	}
+}
