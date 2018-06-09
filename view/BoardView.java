@@ -97,7 +97,17 @@ public class BoardView extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JButton button = (JButton) e.getSource();
-			button.setBackground(Color.GREEN);
+			if(tiles.get(button).hasSpecificChessPiece()){
+				button.setBackground(Color.YELLOW);
+				ChessPieceGeneral piece = tiles.get(button).getSpecificChessPiece().getChessPieceGeneral();
+				moveAlgorithm(piece);
+			}
+		}
+
+		private void moveAlgorithm(ChessPieceGeneral piece) {
+			switch(piece.getName()) {
+				
+			}
 		}
 	};
 
