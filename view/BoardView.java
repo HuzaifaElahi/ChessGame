@@ -20,12 +20,13 @@ import model.Chess;
 import model.ChessPieceGeneral;
 import model.Player;
 import model.SpecificChessPiece;
+import controller.Controller;
 
 public class BoardView extends JFrame {
 	Chess chess = new Chess();
 	Player player1 = new Player("p1", chess);
 	Player player2 = new Player("p2", chess);
-	Player currentPlayer;
+	Player currentPlayer = player1;
 	JPanel panel;
 	Board board = new Board();
 	HashMap<JButton, BoardSquare> tiles = new HashMap<JButton, BoardSquare>();
@@ -97,19 +98,25 @@ public class BoardView extends JFrame {
 			JButton button = (JButton) e.getSource();
 			if(tiles.get(button).hasSpecificChessPiece()){
 				button.setBackground(Color.YELLOW);
-				ChessPieceGeneral piece = tiles.get(button).getSpecificChessPiece().getChessPieceGeneral();
+				SpecificChessPiece piece = tiles.get(button).getSpecificChessPiece();
 				moveAlgorithm(piece);
 			}
 		}
 
-		private void moveAlgorithm(ChessPieceGeneral piece) {
-			switch(piece.getName()) {
-			case "Pawn":
-				if()
-			}
-		}
+	
 	};
 
+	private void moveAlgorithm(SpecificChessPiece piece) {
+		switch(piece.getChessPieceGeneral().getName()) {
+		case "Pawn":
+			if(currentPlayer == player1) {
+				BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY(), chess.getBoard());
+				JButton thisButton = buttons.get(thisSquare);
+				thisButton.setBackground(Color.GREEN);
+			}
+		}
+	}
+	
 	private void refreshData() {
 
 
@@ -124,7 +131,7 @@ public class BoardView extends JFrame {
 				BoardSquare square = new BoardSquare(i, j, color, board);
 				tiles.put(button, square);
 				buttons.put(square, button);
-				board.addBoardSquare(square);
+		//		board.addBoardSquare(square);
 				buttonList.add(button);
 			}
 		}
