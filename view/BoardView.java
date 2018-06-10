@@ -204,145 +204,19 @@ public class BoardView extends JFrame {
 			break;
 		}
 	}
-	
-	private BoardSquare altGetButton(int x, int y) {
-		for(BoardSquare square : squares) {
-			if((square.getX() == x) && (square.getY() == y)) {
-				return square;
-			}
-		}
-		return null;
+
+
+	//Method to find all valid castle moves
+	private void validCastleMoves(SpecificChessPiece piece) {		
+		addToValidButtons(Controller.validStraightLineMoves(piece, true, squares, currentPlayer));
+		addToValidButtons(Controller.validStraightLineMoves(piece, false, squares, currentPlayer));
+
 	}
-
-
-	private void validCastleMoves(SpecificChessPiece piece) {
-		BoardSquare viableSquare;
-		for(BoardSquare square: squares) {
-			//up & down moves
-			if(square.getY() == piece.getCurrentY()){
-				//Moving up
-				for(int i = 1 ; i <= 8 - piece.getCurrentY() ; i++) {
-					//if at top edge, can't move up
-					if(piece.getCurrentY() == 8) {
-						break;
-					}
-					//check square above current piece location
-					viableSquare = altGetButton(piece.getCurrentX(), piece.getCurrentY()+i);
-					if(viableSquare==null) {
-						continue;
-					}
-					//if another piece in the way
-					if(viableSquare.hasSpecificChessPiece()) {
-						//if piece belongs to opponent, add as target
-						if(viableSquare.getSpecificChessPiece().getPlayer() != currentPlayer) {
-							validButtons.add(buttons.get(viableSquare));
-							break;
-						}
-						//if piece belongs to same player, don't add as target
-						else {
-							break;
-						}
-					}
-					//if no piece in the way, add as option
-					else {
-						validButtons.add(buttons.get(viableSquare));
-					}
-				}
-				//Moving down
-				for(int i = 1 ; i<= piece.getCurrentY() ; i++) {
-					//if at bottom edge, break
-					if(piece.getCurrentY() == 1) {
-						break;
-					}
-					//check square below current piece location
-					viableSquare = altGetButton(piece.getCurrentX(), piece.getCurrentY()-i);
-					if(viableSquare ==null) {
-						continue;
-					}
-					//if another piece in the way
-					if(viableSquare.hasSpecificChessPiece()) {
-						//if piece belongs to opponent, add as target
-						if(viableSquare.getSpecificChessPiece().getPlayer() != currentPlayer) {
-							validButtons.add(buttons.get(viableSquare));
-							break;
-						}
-						//if piece belongs to same player, don't add as target
-						else {
-							break;
-						}
-					}
-					//if no piece in the way, add as option
-					else {
-						validButtons.add(buttons.get(viableSquare));
-					}
-				}
-			}
-			
-			
-			
-			//left & right moves
-			if(square.getX() == piece.getCurrentX()){
-				//Moving right
-				for(int i = 1 ; i <= 8 - piece.getCurrentX() ; i++) {
-					//if at right edge, can't move right
-					if(piece.getCurrentX() == 8) {
-						break;
-					}
-					//check square above current piece location
-					viableSquare = altGetButton(piece.getCurrentX()+i, piece.getCurrentY());
-					if(viableSquare==null) {
-						continue;
-					}
-					//if another piece in the way
-					if(viableSquare.hasSpecificChessPiece()) {
-						//if piece belongs to opponent, add as target
-						if(viableSquare.getSpecificChessPiece().getPlayer() != currentPlayer) {
-							validButtons.add(buttons.get(viableSquare));
-							break;
-						}
-						//if piece belongs to same player, don't add as target
-						else {
-							break;
-						}
-					}
-					//if no piece in the way, add as option
-					else {
-						validButtons.add(buttons.get(viableSquare));
-					}
-				}
-				//Moving left
-				for(int i = 1 ; i<= piece.getCurrentX() ; i++) {
-					//if at bottom edge, break
-					if(piece.getCurrentX() == 1) {
-						break;
-					}
-					//check square below current piece location
-					viableSquare = altGetButton(piece.getCurrentX()-i, piece.getCurrentY());
-					if(viableSquare ==null) {
-						continue;
-					}
-					//if another piece in the way
-					if(viableSquare.hasSpecificChessPiece()) {
-						//if piece belongs to opponent, add as target
-						if(viableSquare.getSpecificChessPiece().getPlayer() != currentPlayer) {
-							validButtons.add(buttons.get(viableSquare));
-							break;
-						}
-						//if piece belongs to same player, don't add as target
-						else {
-							break;
-						}
-					}
-					//if no piece in the way, add as option
-					else {
-						validButtons.add(buttons.get(viableSquare));
-					}
-				}
-			}
-			
-			
-			
-			
+	
+	//Method to add all squares to valid buttons
+	private void addToValidButtons(ArrayList<BoardSquare> targetSquares) {
+		for(BoardSquare square : targetSquares) {
+			validButtons.add(buttons.get(square));
 		}
 	}
 
