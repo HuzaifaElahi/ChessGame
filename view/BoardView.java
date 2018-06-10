@@ -277,6 +277,72 @@ public class BoardView extends JFrame {
 					}
 				}
 			}
+			
+			
+			
+			//left & right moves
+			if(square.getX() == piece.getCurrentX()){
+				//Moving right
+				for(int i = 1 ; i <= 8 - piece.getCurrentX() ; i++) {
+					//if at right edge, can't move right
+					if(piece.getCurrentX() == 8) {
+						break;
+					}
+					//check square above current piece location
+					viableSquare = altGetButton(piece.getCurrentX()+i, piece.getCurrentY());
+					if(viableSquare==null) {
+						continue;
+					}
+					//if another piece in the way
+					if(viableSquare.hasSpecificChessPiece()) {
+						//if piece belongs to opponent, add as target
+						if(viableSquare.getSpecificChessPiece().getPlayer() != currentPlayer) {
+							validButtons.add(buttons.get(viableSquare));
+							break;
+						}
+						//if piece belongs to same player, don't add as target
+						else {
+							break;
+						}
+					}
+					//if no piece in the way, add as option
+					else {
+						validButtons.add(buttons.get(viableSquare));
+					}
+				}
+				//Moving left
+				for(int i = 1 ; i<= piece.getCurrentX() ; i++) {
+					//if at bottom edge, break
+					if(piece.getCurrentX() == 1) {
+						break;
+					}
+					//check square below current piece location
+					viableSquare = altGetButton(piece.getCurrentX()-i, piece.getCurrentY());
+					if(viableSquare ==null) {
+						continue;
+					}
+					//if another piece in the way
+					if(viableSquare.hasSpecificChessPiece()) {
+						//if piece belongs to opponent, add as target
+						if(viableSquare.getSpecificChessPiece().getPlayer() != currentPlayer) {
+							validButtons.add(buttons.get(viableSquare));
+							break;
+						}
+						//if piece belongs to same player, don't add as target
+						else {
+							break;
+						}
+					}
+					//if no piece in the way, add as option
+					else {
+						validButtons.add(buttons.get(viableSquare));
+					}
+				}
+			}
+			
+			
+			
+			
 		}
 	}
 
