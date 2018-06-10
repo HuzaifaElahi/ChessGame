@@ -205,6 +205,10 @@ public class BoardView extends JFrame {
 		}
 	}
 
+	//Method to find all valid pawn moves
+	private void validPawnMoves(SpecificChessPiece piece) {
+		addToValidButtons(Controller.validPawnMoves(piece, currentPlayer, chess));
+	}
 
 	//Method to find all valid castle moves
 	private void validCastleMoves(SpecificChessPiece piece) {		
@@ -218,75 +222,6 @@ public class BoardView extends JFrame {
 		for(BoardSquare square : targetSquares) {
 			validButtons.add(buttons.get(square));
 		}
-	}
-
-	private void validPawnMoves(SpecificChessPiece piece) {
-		if(piece.getPlayer() == player1 && piece.getCurrentY() < 8) {
-			//Options to kill using pawn
-			if(piece.getCurrentX() < 8) {
-				//right corner move
-				BoardSquare killSquare1 = Controller.getButtonWithCoords(piece.getCurrentX()+1, piece.getCurrentY()+1, board);
-				if(killSquare1.hasSpecificChessPiece()) {
-					if(killSquare1.getSpecificChessPiece().getPlayer() == player2) {
-						validButtons.add(buttons.get(killSquare1));
-					}
-				}
-			}
-			if(piece.getCurrentX() > 1) {
-				//left corner move
-				BoardSquare killSquare2 = Controller.getButtonWithCoords(piece.getCurrentX()-1, piece.getCurrentY()+1, board);
-				if(killSquare2.hasSpecificChessPiece()) {
-					if(killSquare2.getSpecificChessPiece().getPlayer() == player2) {
-						validButtons.add(buttons.get(killSquare2));
-					}
-				}
-			}
-			//Options to move forward using pawn
-			BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+1, board);
-			JButton thisButton = buttons.get(thisSquare);
-			if(!thisSquare.hasSpecificChessPiece()) {
-				validButtons.add(thisButton);
-			}
-			//Initial move can be two steps
-			if(piece.getCurrentY() == 2) {
-				thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+2, board);
-				thisButton = buttons.get(thisSquare);
-				validButtons.add(thisButton);
-			}
-		}
-		else if (piece.getPlayer() == player2 && piece.getCurrentY() > 0){
-			//Options to kill using pawn
-			if(piece.getCurrentX() < 8) {
-				//right corner move
-				BoardSquare killSquare1 = Controller.getButtonWithCoords(piece.getCurrentX()+1, piece.getCurrentY()-1, board);
-				if(killSquare1.hasSpecificChessPiece()) {
-					if(killSquare1.getSpecificChessPiece().getPlayer() == player1) {
-						validButtons.add(buttons.get(killSquare1));
-					}
-				}
-			}
-			if(piece.getCurrentX() > 1) {
-				//left corner move
-				BoardSquare killSquare2 = Controller.getButtonWithCoords(piece.getCurrentX()-1, piece.getCurrentY()-1, board);
-				if(killSquare2.hasSpecificChessPiece()) {
-					if(killSquare2.getSpecificChessPiece().getPlayer() == player1) {
-						validButtons.add(buttons.get(killSquare2));
-					}
-				}
-			}
-			//Options to move forward using pawn
-			BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()-1, board);
-			JButton thisButton = buttons.get(thisSquare);
-			if(!thisSquare.hasSpecificChessPiece()) {
-				validButtons.add(thisButton);
-			}
-			//Initial move can be two steps
-			if(piece.getCurrentY() == 7) {
-				thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()-2, board);
-				thisButton = buttons.get(thisSquare);
-				validButtons.add(thisButton);
-			}
-		}		
 	}
 
 	//Re-populate data
