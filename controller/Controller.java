@@ -18,7 +18,6 @@ public class Controller {
 		List<BoardSquare> squareHolder = new ArrayList<BoardSquare>();
 		squareHolder = board.getBoardSquares();
 		for(BoardSquare square : squareHolder) {
-			System.out.println(square.getX() + " " + square.getY());
 			if((square.getX() == x) && (square.getY() == y)) {
 				return square;
 			}

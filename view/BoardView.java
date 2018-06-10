@@ -30,10 +30,13 @@ public class BoardView extends JFrame {
 	Player player2 = new Player("p2", chess);
 	Player currentPlayer = player1;
 	JPanel panel;
-	
+	Boolean pieceSelected = false; 
+	SpecificChessPiece selectedPiece;
+
 	HashMap<JButton, BoardSquare> tiles = new HashMap<JButton, BoardSquare>();
 	HashMap<BoardSquare, JButton> buttons = new HashMap<BoardSquare, JButton>(); 
 	ArrayList<JButton> buttonList = new ArrayList<JButton>();
+	ArrayList<JButton> validButtons = new ArrayList<JButton>();
 
 	//Make Piece Templates
 	ChessPieceGeneral generalPawn = new ChessPieceGeneral("Pawn", chess);
@@ -102,15 +105,69 @@ public class BoardView extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JButton button = (JButton) e.getSource();
-			if(tiles.get(button).hasSpecificChessPiece()){
+			if(tiles.get(button).hasSpecificChessPiece() && pieceSelected == false){
 				button.setBackground(Color.YELLOW);
+				pieceSelected = true;
 				SpecificChessPiece piece = tiles.get(button).getSpecificChessPiece();
 				moveAlgorithm(piece);
+				selectedPiece = piece;
+				paintSelect();
+			}
+			else if((pieceSelected == true) && (!tiles.get(button).hasSpecificChessPiece()) && validButtons.contains(button)) {
+				movePieceNoKill(selectedPiece, button);
+			}
+			else{
+				pieceSelected = false;
+				resetSelected();
+				validButtons.clear();
 			}
 		}
 
-	
+
 	};
+
+	private void movePieceNoKill(SpecificChessPiece selectedPiece, JButton newButton) {
+		tiles.get(newButton).setSpecificChessPiece(selectedPiece);
+		newButton.setText(selectedPiece.getChessPieceGeneral().getName());
+		selectedPiece.getBoardSquare().setSpecificChessPiece(null);
+		pieceSelected = false;
+		resetSelected();
+		validButtons.clear();
+		changePlayer();
+	}
+
+	private void changePlayer() {
+		if (currentPlayer == player1) {
+			currentPlayer = player2;
+		}
+		else {
+			currentPlayer = player1;
+		}
+
+	}
+
+	private void resetSelected() {
+		for(JButton button : buttonList) {
+			String color = tiles.get(button).getColor();
+			if(color == "black") {
+				button.setBackground(Color.BLACK);
+			}
+			else {
+				button.setBackground(Color.WHITE);
+			}
+		}
+	}
+
+	private void paintSelect() {
+		for(JButton button: validButtons) {
+			button.setBackground(Color.GREEN);
+		}
+		for(JButton button: buttonList) {
+			if(tiles.get(button).hasSpecificChessPiece()) {
+				button.setText(tiles.get(button).getSpecificChessPiece().getChessPieceGeneral().getName());
+			}
+		}
+	}
 
 	private void moveAlgorithm(SpecificChessPiece piece) {
 		switch(piece.getChessPieceGeneral().getName()) {
@@ -118,12 +175,27 @@ public class BoardView extends JFrame {
 			if(piece.isPlayer1()) {
 				BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+1, board);
 				JButton thisButton = buttons.get(thisSquare);
-				thisButton.setBackground(Color.GREEN);
+				validButtons.add(thisButton);
+				if(piece.getCurrentY() == 2) {
+					thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+2, board);
+					thisButton = buttons.get(thisSquare);
+					validButtons.add(thisButton);
+				}
 			}
+			else {
+				BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()-1, board);
+				JButton thisButton = buttons.get(thisSquare);
+				validButtons.add(thisButton);
+				if(piece.getCurrentY() == 7) {
+					thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()-2, board);
+					thisButton = buttons.get(thisSquare);
+					validButtons.add(thisButton);
+				}
+			}	
 		}
 	}
-	
-	
+
+
 	private void refreshData() {
 
 
@@ -138,12 +210,12 @@ public class BoardView extends JFrame {
 				BoardSquare square = new BoardSquare(i, j, color, board);
 				tiles.put(button, square);
 				buttons.put(square, button);
-		//		board.addBoardSquare(square);
 				buttonList.add(button);
 			}
 		}
 	}
 
+	//Retrieve Color of Square based on row and column
 	private String getColor(int i, int j) {
 		if(((i+j)%2)==0){
 			return "white";
@@ -159,12 +231,14 @@ public class BoardView extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		generateTiles();
 		for(int i=0;i<64;i++) {
+			// Set Square Colors
 			if(board.getBoardSquare(i).getColor() == "black") {
 				buttons.get(board.getBoardSquare(i)).setBackground(Color.BLACK);
 			}
 			else {
 				buttons.get(board.getBoardSquare(i)).setBackground(Color.WHITE);
 			}
+			// Set Square Size
 			buttons.get(board.getBoardSquare(i)).setPreferredSize(new Dimension(90, 90));
 		}
 
