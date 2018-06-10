@@ -112,8 +112,12 @@ public class BoardView extends JFrame {
 			}
 			//If you pick a valid option to move upon
 			else if((pieceSelected == true) && (!tiles.get(button).hasSpecificChessPiece()) && validButtons.contains(button) && (selectedPiece.getPlayer() == currentPlayer)) {
-				movePieceNoKill(selectedPiece, button);
+				movePiece(selectedPiece, button, false);
 			}
+			//If you pick a valid option and kill
+			else if((pieceSelected == true) && (tiles.get(button).hasSpecificChessPiece()) && ((tiles.get(button).getSpecificChessPiece().getPlayer() != currentPlayer))&& validButtons.contains(button) && (selectedPiece.getPlayer() == currentPlayer)) {
+				movePiece(selectedPiece, button, true);
+			}			
 			//Reset everything
 			else{
 				pieceSelected = false;
@@ -133,13 +137,17 @@ public class BoardView extends JFrame {
 		paintSelect();		
 	}
 	
-	//Move piece onto vacant square
-	private void movePieceNoKill(SpecificChessPiece selectedPiece, JButton newButton) {
+	//Move piece onto vacant square and/or kill opponent piece
+	private void movePiece(SpecificChessPiece selectedPiece, JButton newButton, Boolean toKill) {
+		selectedPiece.getBoardSquare().setSpecificChessPiece(null);
+		if(toKill) {
+			tiles.get(newButton).getSpecificChessPiece().delete();
+		}
 		tiles.get(newButton).setSpecificChessPiece(selectedPiece);
 		selectedPiece.setCurrentX(tiles.get(newButton).getX());
 		selectedPiece.setCurrentY(tiles.get(newButton).getY());
 		newButton.setText(selectedPiece.getChessPieceGeneral().getName());
-		selectedPiece.getBoardSquare().setSpecificChessPiece(null);
+		selectedPiece.setPlayer(currentPlayer);
 		pieceSelected = false;
 		resetSelected();
 		validButtons.clear();
@@ -190,29 +198,65 @@ public class BoardView extends JFrame {
 	private void moveAlgorithm(SpecificChessPiece piece) {
 		switch(piece.getChessPieceGeneral().getName()) {
 		case "Pawn":
-			if(piece.isPlayer1() && piece.getCurrentY() < 8) {
-				BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+1, board);
-				JButton thisButton = buttons.get(thisSquare);
-				validButtons.add(thisButton);
-				if(piece.getCurrentY() == 2) {
-					thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+2, board);
-					thisButton = buttons.get(thisSquare);
-					validButtons.add(thisButton);
-				}
-			}
-			else if (!piece.isPlayer1() && piece.getCurrentY() > 0){
-				BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()-1, board);
-				JButton thisButton = buttons.get(thisSquare);
-				validButtons.add(thisButton);
-				if(piece.getCurrentY() == 7) {
-					thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()-2, board);
-					thisButton = buttons.get(thisSquare);
-					validButtons.add(thisButton);
-				}
-			}	
+			validPawnMoves(piece);
 		}
 	}
 
+
+	private void validPawnMoves(SpecificChessPiece piece) {
+		if(piece.getPlayer() == player1 && piece.getCurrentY() < 8) {
+			//Options to kill using pawn
+			BoardSquare killSquare1 = Controller.getButtonWithCoords(piece.getCurrentX()+1, piece.getCurrentY()+1, board);
+			if(killSquare1.hasSpecificChessPiece()) {
+				if(killSquare1.getSpecificChessPiece().getPlayer() == player2) {
+					validButtons.add(buttons.get(killSquare1));
+				}
+			}
+			BoardSquare killSquare2 = Controller.getButtonWithCoords(piece.getCurrentX()-1, piece.getCurrentY()+1, board);
+			if(killSquare2.hasSpecificChessPiece()) {
+				if(killSquare2.getSpecificChessPiece().getPlayer() == player2) {
+					validButtons.add(buttons.get(killSquare2));
+				}
+			}
+			//Options to move forward using pawn
+			BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+1, board);
+			JButton thisButton = buttons.get(thisSquare);
+			if(!thisSquare.hasSpecificChessPiece()) {
+				validButtons.add(thisButton);
+			}
+			if(piece.getCurrentY() == 2) {
+				thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+2, board);
+				thisButton = buttons.get(thisSquare);
+				validButtons.add(thisButton);
+			}
+		}
+		else if (piece.getPlayer() == player2 && piece.getCurrentY() > 0){
+			//Options to kill using pawn
+			BoardSquare killSquare1 = Controller.getButtonWithCoords(piece.getCurrentX()+1, piece.getCurrentY()-1, board);
+			if(killSquare1.hasSpecificChessPiece()) {
+				if(killSquare1.getSpecificChessPiece().getPlayer() == player1) {
+					validButtons.add(buttons.get(killSquare1));
+				}
+			}
+			BoardSquare killSquare2 = Controller.getButtonWithCoords(piece.getCurrentX()-1, piece.getCurrentY()-1, board);
+			if(killSquare2.hasSpecificChessPiece()) {
+				if(killSquare2.getSpecificChessPiece().getPlayer() == player1) {
+					validButtons.add(buttons.get(killSquare2));
+				}
+			}
+			//Options to move forward using pawn
+			BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()-1, board);
+			JButton thisButton = buttons.get(thisSquare);
+			if(!thisSquare.hasSpecificChessPiece()) {
+				validButtons.add(thisButton);
+			}
+			if(piece.getCurrentY() == 7) {
+				thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()-2, board);
+				thisButton = buttons.get(thisSquare);
+				validButtons.add(thisButton);
+			}
+		}		
+	}
 
 	private void refreshData() {
 
