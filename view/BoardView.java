@@ -217,6 +217,11 @@ public class BoardView extends JFrame {
 
 	}
 	
+	//Method to find all valid bishop moves
+	private void validBishopMoves(SpecificChessPiece piece) {
+		
+	}
+	
 	//Method to add all squares to valid buttons
 	private void addToValidButtons(ArrayList<BoardSquare> targetSquares) {
 		for(BoardSquare square : targetSquares) {
