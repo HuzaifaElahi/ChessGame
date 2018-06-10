@@ -25,5 +25,13 @@ public class Controller {
 		System.out.println("NO SUCH SQUARE");
 		return null;
 	}
+	
+	public static Player getPlayerByButton(BoardSquare boardSquare) {
+		if(boardSquare.hasSpecificChessPiece()) {
+				return boardSquare.getSpecificChessPiece().getPlayer();
+		}
+		System.out.println("NO PLAYER");
+		return null;
+	}
 
 }

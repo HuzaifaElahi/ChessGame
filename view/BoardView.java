@@ -101,21 +101,20 @@ public class BoardView extends JFrame {
 		}		
 	}
 
+	//Button action listener
 	ActionListener boardListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JButton button = (JButton) e.getSource();
-			if(tiles.get(button).hasSpecificChessPiece() && pieceSelected == false){
-				button.setBackground(Color.YELLOW);
-				pieceSelected = true;
-				SpecificChessPiece piece = tiles.get(button).getSpecificChessPiece();
-				moveAlgorithm(piece);
-				selectedPiece = piece;
-				paintSelect();
+			//Selected a piece to determine move
+			if(tiles.get(button).hasSpecificChessPiece() && pieceSelected == false && currentPlayer == Controller.getPlayerByButton(tiles.get(button))){
+				highlightOptions(button);
 			}
-			else if((pieceSelected == true) && (!tiles.get(button).hasSpecificChessPiece()) && validButtons.contains(button)) {
+			//If you pick a valid option to move upon
+			else if((pieceSelected == true) && (!tiles.get(button).hasSpecificChessPiece()) && validButtons.contains(button) && (selectedPiece.getPlayer() == currentPlayer)) {
 				movePieceNoKill(selectedPiece, button);
 			}
+			//Reset everything
 			else{
 				pieceSelected = false;
 				resetSelected();
@@ -123,19 +122,32 @@ public class BoardView extends JFrame {
 			}
 		}
 
-
 	};
-
+	//Highlight selected piece
+	private void highlightOptions(JButton selectedButton) {
+		selectedButton.setBackground(Color.YELLOW);
+		pieceSelected = true;
+		SpecificChessPiece piece = tiles.get(selectedButton).getSpecificChessPiece();
+		moveAlgorithm(piece);
+		selectedPiece = piece;
+		paintSelect();		
+	}
+	
+	//Move piece onto vacant square
 	private void movePieceNoKill(SpecificChessPiece selectedPiece, JButton newButton) {
 		tiles.get(newButton).setSpecificChessPiece(selectedPiece);
+		selectedPiece.setCurrentX(tiles.get(newButton).getX());
+		selectedPiece.setCurrentY(tiles.get(newButton).getY());
 		newButton.setText(selectedPiece.getChessPieceGeneral().getName());
 		selectedPiece.getBoardSquare().setSpecificChessPiece(null);
 		pieceSelected = false;
 		resetSelected();
 		validButtons.clear();
 		changePlayer();
+		paintSelect();
 	}
 
+	//Toggle current player
 	private void changePlayer() {
 		if (currentPlayer == player1) {
 			currentPlayer = player2;
@@ -145,7 +157,8 @@ public class BoardView extends JFrame {
 		}
 
 	}
-
+	
+	//Reset colors
 	private void resetSelected() {
 		for(JButton button : buttonList) {
 			String color = tiles.get(button).getColor();
@@ -157,7 +170,8 @@ public class BoardView extends JFrame {
 			}
 		}
 	}
-
+	
+	//Add text and color viable squares
 	private void paintSelect() {
 		for(JButton button: validButtons) {
 			button.setBackground(Color.GREEN);
@@ -166,13 +180,17 @@ public class BoardView extends JFrame {
 			if(tiles.get(button).hasSpecificChessPiece()) {
 				button.setText(tiles.get(button).getSpecificChessPiece().getChessPieceGeneral().getName());
 			}
+			else {
+				button.setText(" ");
+			}
 		}
 	}
 
+	//Logic for valid movements
 	private void moveAlgorithm(SpecificChessPiece piece) {
 		switch(piece.getChessPieceGeneral().getName()) {
 		case "Pawn":
-			if(piece.isPlayer1()) {
+			if(piece.isPlayer1() && piece.getCurrentY() < 8) {
 				BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+1, board);
 				JButton thisButton = buttons.get(thisSquare);
 				validButtons.add(thisButton);
@@ -182,7 +200,7 @@ public class BoardView extends JFrame {
 					validButtons.add(thisButton);
 				}
 			}
-			else {
+			else if (!piece.isPlayer1() && piece.getCurrentY() > 0){
 				BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()-1, board);
 				JButton thisButton = buttons.get(thisSquare);
 				validButtons.add(thisButton);
@@ -200,12 +218,12 @@ public class BoardView extends JFrame {
 
 
 	}
-
+	
+	//Create Buttons and Squares and add to HashMaps and ArrayList
 	private void generateTiles() {
 		for(int i=1;i<=8;i++) {
 			for(int j=1;j<=8;j++) {
-				String name = i + " " + j;
-				JButton button = new JButton(name);	
+				JButton button = new JButton();	
 				String color = getColor(i, j);
 				BoardSquare square = new BoardSquare(i, j, color, board);
 				tiles.put(button, square);
