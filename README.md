@@ -1,11 +1,11 @@
 # ChessGame
 
-##Two player chess game 
+## Two player chess game 
 
-##Possible turns are highlighted in green when a player selects one of their pieces
+## Possible turns are highlighted in green when a player selects one of their pieces
 
-##Players take turns till the king of the opposition is eliminated
+## Players take turns till the king of the opposition is eliminated
 
-##All code present in src folder
+## All code present in src folder
 
-##Built using MVC design pattern and Java Swing graphics
+## Built using MVC design pattern and Java Swing graphics
