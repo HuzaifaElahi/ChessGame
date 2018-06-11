@@ -202,6 +202,8 @@ public class BoardView extends JFrame {
 		case "Castle":
 			validCastleMoves(piece);
 			break;
+		case "Bishop":
+			validBishopMoves(piece);
 		}
 	}
 
@@ -219,6 +221,55 @@ public class BoardView extends JFrame {
 	
 	//Method to find all valid bishop moves
 	private void validBishopMoves(SpecificChessPiece piece) {
+		diagonalMove(piece, true, true);
+		diagonalMove(piece, true, false);
+		diagonalMove(piece, false, true);
+		diagonalMove(piece, false, false);
+		
+	}
+	//Helper method for finding valid diagonal moves
+	private Boolean diagonalBooleanDecision(Boolean isUp, Boolean isRight, int x, int y, int xRef, int yRef) {
+		Boolean pickBooleanEq = false;
+		Boolean right =  (xRef + x <= 8);
+		Boolean left =  (xRef + x >= 1);
+		Boolean bottom = (yRef + y >= 1);
+		Boolean top = (yRef + y <= 8);
+		if(isUp && isRight)
+			pickBooleanEq = right&&top;
+		else if(isUp && !isRight)
+			pickBooleanEq = left&&top;
+		else if(!isUp && isRight)
+			pickBooleanEq = bottom&&right;
+		else {
+			pickBooleanEq = bottom&&left;
+		}
+		return pickBooleanEq;
+	}
+	
+	private void diagonalMove(SpecificChessPiece piece, Boolean isUp, Boolean isRight) {
+		int xRef = piece.getCurrentX();
+		int yRef = piece.getCurrentY();
+		int x = 0 ; int y = 0;
+		Boolean pickBooleanEq = diagonalBooleanDecision(isUp, isRight, x, y, xRef, yRef);
+		for(x = 1, y = 1; pickBooleanEq; x++, y++) {
+			if(!isUp) {
+				y = -y;
+			}
+			if(!isRight) {
+				x = -x;
+			}
+			pickBooleanEq = diagonalBooleanDecision(isUp, isRight, x, y, xRef, yRef);
+			BoardSquare possibleSquare = Controller.getButtonWithCoords(xRef + x, yRef + y, board);
+			if(possibleSquare!=null) {
+				validButtons.add(buttons.get(possibleSquare));
+			}
+			if(!isUp) {
+				y = -y;
+			}
+			if(!isRight) {
+				x = -x;
+			}
+		}
 		
 	}
 	
