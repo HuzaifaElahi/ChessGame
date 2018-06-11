@@ -304,7 +304,37 @@ public class Controller {
 
 	//Method to find valid moves for a given king
 	public static ArrayList<BoardSquare> validKingMoves(SpecificChessPiece piece, Player currentPlayer) {
-		
-		return null;
+		ArrayList<BoardSquare> list = new ArrayList<>();
+		ArrayList<BoardSquare> finalListSquares = new ArrayList<>();
+		//Add all possibilities to list
+		list.add(Controller.getButtonWithCoords(piece.getCurrentX()+1, piece.getCurrentY(), piece.getBoardSquare().getBoard()));
+		list.add(Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+1, piece.getBoardSquare().getBoard()));
+		list.add(Controller.getButtonWithCoords(piece.getCurrentX()+1, piece.getCurrentY()+1, piece.getBoardSquare().getBoard()));
+		list.add(Controller.getButtonWithCoords(piece.getCurrentX()-1, piece.getCurrentY(), piece.getBoardSquare().getBoard()));
+		list.add(Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()-1, piece.getBoardSquare().getBoard()));
+		list.add(Controller.getButtonWithCoords(piece.getCurrentX()-1, piece.getCurrentY()-1, piece.getBoardSquare().getBoard()));
+		list.add(Controller.getButtonWithCoords(piece.getCurrentX()+1, piece.getCurrentY()-1, piece.getBoardSquare().getBoard()));
+		list.add(Controller.getButtonWithCoords(piece.getCurrentX()-1, piece.getCurrentY()+1, piece.getBoardSquare().getBoard()));
+		//Check list
+		for(BoardSquare possibleSquare: list) {
+			if(possibleSquare!=null) {
+				//If piece in the way
+				if(possibleSquare.hasSpecificChessPiece()) {
+					//If opposition piece, add as target
+					if(possibleSquare.getSpecificChessPiece().getPlayer() != currentPlayer) {
+						finalListSquares.add(possibleSquare);
+					}
+					//If own piece, don't add as option
+					else {
+					}
+				}
+				//Else add empty spot as option
+				else {
+					finalListSquares.add(possibleSquare);
+				}
+			}
+		}
+		//Return final list of options and targets
+		return finalListSquares;
 	}
 }
