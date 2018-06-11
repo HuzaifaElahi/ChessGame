@@ -218,17 +218,17 @@ public class BoardView extends JFrame {
 		addToValidButtons(Controller.validStraightLineMoves(piece, false, squares, currentPlayer));
 
 	}
-	
+
 	//Method to find all valid bishop moves
 	private void validBishopMoves(SpecificChessPiece piece) {
 		diagonalMove(piece, true, true);
 		diagonalMove(piece, true, false);
 		diagonalMove(piece, false, true);
 		diagonalMove(piece, false, false);
-		
+
 	}
 	//Helper method for finding valid diagonal moves
-	private Boolean diagonalBooleanDecision(Boolean isUp, Boolean isRight, int x, int y, int xRef, int yRef) {
+	private Boolean diagonalBooleanDecisionHelper(Boolean isUp, Boolean isRight, int x, int y, int xRef, int yRef) {
 		Boolean pickBooleanEq = false;
 		Boolean right =  (xRef + x <= 8);
 		Boolean left =  (xRef + x >= 1);
@@ -245,34 +245,58 @@ public class BoardView extends JFrame {
 		}
 		return pickBooleanEq;
 	}
-	
+
+	private int diagonalVerticalSignHelper(Boolean isUp, int y) {
+		if(!isUp) {
+			return -y;
+		}
+		else {
+			return y;
+		}
+	}
+	private int diagonalHorizontalSignHelper(Boolean isRight, int x) {
+		if(!isRight) {
+			return -x;
+		}
+		else {
+			return x;
+		}
+	}
+
 	private void diagonalMove(SpecificChessPiece piece, Boolean isUp, Boolean isRight) {
 		int xRef = piece.getCurrentX();
 		int yRef = piece.getCurrentY();
 		int x = 0 ; int y = 0;
-		Boolean pickBooleanEq = diagonalBooleanDecision(isUp, isRight, x, y, xRef, yRef);
+		Boolean pickBooleanEq = diagonalBooleanDecisionHelper(isUp, isRight, x, y, xRef, yRef);
 		for(x = 1, y = 1; pickBooleanEq; x++, y++) {
-			if(!isUp) {
-				y = -y;
-			}
-			if(!isRight) {
-				x = -x;
-			}
-			pickBooleanEq = diagonalBooleanDecision(isUp, isRight, x, y, xRef, yRef);
+			y=diagonalVerticalSignHelper(isUp, y);
+			x=diagonalHorizontalSignHelper(isRight,x);
+			pickBooleanEq = diagonalBooleanDecisionHelper(isUp, isRight, x, y, xRef, yRef);
 			BoardSquare possibleSquare = Controller.getButtonWithCoords(xRef + x, yRef + y, board);
 			if(possibleSquare!=null) {
-				validButtons.add(buttons.get(possibleSquare));
+				//If piece in the way
+				if(possibleSquare.hasSpecificChessPiece()) {
+					//If opposition piece, add as target
+					if(possibleSquare.getSpecificChessPiece().getPlayer() != currentPlayer) {
+						validButtons.add(buttons.get(possibleSquare));
+						break;
+					}
+					//If own piece, don't add as option
+					else {
+						break;
+					}
+				}
+				//Else add empty spot as option
+				else {
+					validButtons.add(buttons.get(possibleSquare));
+				}
 			}
-			if(!isUp) {
-				y = -y;
-			}
-			if(!isRight) {
-				x = -x;
-			}
+			y=diagonalVerticalSignHelper(isUp, y);
+			x=diagonalHorizontalSignHelper(isRight,x);
 		}
-		
+
 	}
-	
+
 	//Method to add all squares to valid buttons
 	private void addToValidButtons(ArrayList<BoardSquare> targetSquares) {
 		for(BoardSquare square : targetSquares) {
