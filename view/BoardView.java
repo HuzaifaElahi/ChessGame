@@ -207,8 +207,16 @@ public class BoardView extends JFrame {
 		case "Queen":
 			validQueenMoves(piece);
 			break;
+		case "Knight":
+			validKnightMoves(piece);
+			break;
 		}
 	}
+
+	private void validKnightMoves(SpecificChessPiece piece) {
+		
+	}
+
 
 	//Method to find all valid pawn moves
 	private void validPawnMoves(SpecificChessPiece piece) {
@@ -217,9 +225,10 @@ public class BoardView extends JFrame {
 
 	//Method to find all valid castle moves
 	private void validCastleMoves(SpecificChessPiece piece) {		
-		addToValidButtons(Controller.validStraightLineMoves(piece, true, squares, currentPlayer));
-		addToValidButtons(Controller.validStraightLineMoves(piece, false, squares, currentPlayer));
-
+		addToValidButtons(Controller.validStraightLineMove(piece,currentPlayer, true, false, false, false));
+		addToValidButtons(Controller.validStraightLineMove(piece,currentPlayer, false, true, false, false));
+		addToValidButtons(Controller.validStraightLineMove(piece,currentPlayer, false, false, true, false));
+		addToValidButtons(Controller.validStraightLineMove(piece,currentPlayer, false, false, false, true));
 	}
 
 	//Method to find all valid bishop moves
