@@ -206,6 +206,10 @@ public class BoardView extends JFrame {
 			break;
 		case "Bishop":
 			validBishopMoves(piece);
+			break;
+		case "Queen":
+			validQueenMoves(piece);
+			break;
 		}
 	}
 
@@ -228,6 +232,13 @@ public class BoardView extends JFrame {
 		addToValidButtons(Controller.diagonalMove(piece, currentPlayer, false, true));
 		addToValidButtons(Controller.diagonalMove(piece, currentPlayer, false, false));
 
+	}
+	
+	//Method to find all valid Queen moves
+	private void validQueenMoves(SpecificChessPiece piece) {
+		//Use existing methods for bishop and castle as queen is capable of both simultaneously
+		validBishopMoves(piece);
+		validCastleMoves(piece);
 	}
 	
 	//Method to add all squares to valid buttons
