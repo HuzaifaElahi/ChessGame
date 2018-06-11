@@ -97,10 +97,6 @@ public class BoardView extends JFrame {
 			else if(((square.getY() == 1) && (square.getX() == 5) && (player == player1)||((square.getY() == 8) && (square.getX() == 4) && (player == player2)))) {
 				new SpecificChessPiece(true, square.getX(), square.getY(), isPlayer1, generalQueen, square, player);
 			}
-			//Set names of each piece
-			if(square.hasSpecificChessPiece()) {
-				button.setText(square.getSpecificChessPiece().getChessPieceGeneral().getName());
-			}
 		}		
 	}
 
@@ -188,6 +184,7 @@ public class BoardView extends JFrame {
 		for(JButton button: buttonList) {
 			if(tiles.get(button).hasSpecificChessPiece()) {
 				button.setText(tiles.get(button).getSpecificChessPiece().getChessPieceGeneral().getName());
+				button.setToolTipText(Controller.getPlayerByButton(tiles.get(button)).getName());
 			}
 			else {
 				button.setText(" ");
