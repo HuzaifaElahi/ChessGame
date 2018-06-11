@@ -213,9 +213,37 @@ public class BoardView extends JFrame {
 		}
 	}
 
-	private void validKnightMoves(SpecificChessPiece piece) {
-		
+	private void validKnightMoves(SpecificChessPiece piece) {	
+		ArrayList<BoardSquare> list1 = removeNullSquares(validKnightMovesHelper(piece.getCurrentX(), piece.getCurrentY(), 1, 2));
+		ArrayList<BoardSquare> list2 = removeNullSquares(validKnightMovesHelper(piece.getCurrentX(), piece.getCurrentY(), 2, 1));
+		addToValidButtons(list1);
+		addToValidButtons(list2);
 	}
+	
+	//Helper method for removing null squares
+	private ArrayList<BoardSquare> removeNullSquares(ArrayList<BoardSquare> list){
+		ArrayList<BoardSquare> listRemove = new ArrayList<BoardSquare>();
+		for(BoardSquare square: list) {
+			if(square ==  null) {
+				listRemove.add(square);
+			}
+		}
+		for(BoardSquare square: listRemove) {
+			list.remove(square);
+		}
+		return list;
+	}
+	
+	//Helper method for locating knight moves
+	private ArrayList<BoardSquare> validKnightMovesHelper(int templateX, int templateY, int offsetX, int offsetY){
+		ArrayList<BoardSquare> list = new ArrayList<>();
+		list.add(Controller.getButtonWithCoords(templateX+offsetX, templateY+offsetY, board));
+		list.add(Controller.getButtonWithCoords(templateX+offsetX, templateY-offsetY, board));
+		list.add(Controller.getButtonWithCoords(templateX-offsetX, templateY+offsetY, board));
+		list.add(Controller.getButtonWithCoords(templateX-offsetX, templateY-offsetY, board));
+		return list;
+	}
+	
 
 
 	//Method to find all valid pawn moves
