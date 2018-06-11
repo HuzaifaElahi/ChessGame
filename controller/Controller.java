@@ -263,6 +263,40 @@ public class Controller {
 		}
 		return finalListSquares;
 	}
-
-
+	
+	public static ArrayList<BoardSquare> validKnightMoves(SpecificChessPiece piece, Player currentPlayer) {	
+		ArrayList<BoardSquare> finalList = new ArrayList<BoardSquare>();
+		finalList.addAll(validKnightMovesHelper(piece.getCurrentX(), piece.getCurrentY(), 1, 2, piece.getBoardSquare().getBoard(), currentPlayer));
+		finalList.addAll(validKnightMovesHelper(piece.getCurrentX(), piece.getCurrentY(), 2, 1, piece.getBoardSquare().getBoard(), currentPlayer));
+		return finalList;
+	}
+	
+	//Helper method for locating knight moves
+	private static ArrayList<BoardSquare> validKnightMovesHelper(int templateX, int templateY, int offsetX, int offsetY, Board board, Player currentPlayer){
+		ArrayList<BoardSquare> list = new ArrayList<>();
+		ArrayList<BoardSquare> finalListSquares = new ArrayList<>();
+		list.add(Controller.getButtonWithCoords(templateX+offsetX, templateY+offsetY, board));
+		list.add(Controller.getButtonWithCoords(templateX+offsetX, templateY-offsetY, board));
+		list.add(Controller.getButtonWithCoords(templateX-offsetX, templateY+offsetY, board));
+		list.add(Controller.getButtonWithCoords(templateX-offsetX, templateY-offsetY, board));
+		for(BoardSquare possibleSquare: list) {
+			if(possibleSquare!=null) {
+				//If piece in the way
+				if(possibleSquare.hasSpecificChessPiece()) {
+					//If opposition piece, add as target
+					if(possibleSquare.getSpecificChessPiece().getPlayer() != currentPlayer) {
+						finalListSquares.add(possibleSquare);
+					}
+					//If own piece, don't add as option
+					else {
+					}
+				}
+				//Else add empty spot as option
+				else {
+					finalListSquares.add(possibleSquare);
+				}
+			}
+		}
+		return finalListSquares;
+	}
 }
