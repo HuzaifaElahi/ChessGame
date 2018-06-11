@@ -233,14 +233,17 @@ public class Controller {
 				}
 			}
 			//Options to move forward using pawn
-			BoardSquare thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+yOffset, piece.getBoardSquare().getBoard());
-			if(!thisSquare.hasSpecificChessPiece()) {
-				finalListSquares.add(thisSquare);
+			BoardSquare thisSquareFrontOne = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+yOffset, piece.getBoardSquare().getBoard());
+			if(!thisSquareFrontOne.hasSpecificChessPiece()) {
+				finalListSquares.add(thisSquareFrontOne);
 			}
 			//Initial move can be two steps
 			if(piece.getCurrentY() == startingPos) {
-				thisSquare = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+yOffset*2, piece.getBoardSquare().getBoard());
-				finalListSquares.add(thisSquare);
+				//Make sure pawn can move two steps in front
+				BoardSquare thisSquareFrontTwo = Controller.getButtonWithCoords(piece.getCurrentX(), piece.getCurrentY()+yOffset*2, piece.getBoardSquare().getBoard());
+				if(!thisSquareFrontTwo.hasSpecificChessPiece() && finalListSquares.contains(thisSquareFrontOne)) {
+					finalListSquares.add(thisSquareFrontTwo);
+				}
 			}
 		}
 		return finalListSquares;
