@@ -14,6 +14,8 @@ import model.SpecificChessPiece;
 import view.BoardView;
 
 public class Controller {
+	
+	//Finds the board square associated with the given coordinates on the board
 	public static BoardSquare getButtonWithCoords(int x, int y, Board board){
 		List<BoardSquare> squareHolder = new ArrayList<BoardSquare>();
 		squareHolder = board.getBoardSquares();
@@ -26,6 +28,7 @@ public class Controller {
 		return null;
 	}
 
+	//Finds the player associated with the given boardSquare
 	public static Player getPlayerByButton(BoardSquare boardSquare) {
 		if(boardSquare.hasSpecificChessPiece()) {
 			return boardSquare.getSpecificChessPiece().getPlayer();
@@ -34,6 +37,84 @@ public class Controller {
 		return null;
 	}
 
+	//Helper method for finding valid diagonal moves
+	private static Boolean diagonalBooleanDecisionHelper(Boolean isUp, Boolean isRight, int x, int y, int xRef, int yRef) {
+		Boolean pickBooleanEq = false;
+		//Check conditions to ensure within bounds of specific boundaries
+		Boolean right =  (xRef + x <= 8);
+		Boolean left =  (xRef + x >= 1);
+		Boolean bottom = (yRef + y >= 1);
+		Boolean top = (yRef + y <= 8);
+		//Assign boolean to appropriate diagonal direction
+		if(isUp && isRight)
+			pickBooleanEq = right&&top;
+		else if(isUp && !isRight)
+			pickBooleanEq = left&&top;
+		else if(!isUp && isRight)
+			pickBooleanEq = bottom&&right;
+		else {
+			pickBooleanEq = bottom&&left;
+		}
+		return pickBooleanEq;
+	}
+
+	//Helper method to negative value of y where we must go down
+	private static int diagonalVerticalSignHelper(Boolean isUp, int y) {
+		if(!isUp) {
+			return -y;
+		}
+		else {
+			return y;
+		}
+	}
+	
+	//Helper method to negative value of x where we must go left
+	private static int diagonalHorizontalSignHelper(Boolean isRight, int x) {
+		if(!isRight) {
+			return -x;
+		}
+		else {
+			return x;
+		}
+	}
+	
+	//Method to find all valid moves for a diagonal line
+	public static ArrayList<BoardSquare> diagonalMove(SpecificChessPiece piece, Player currentPlayer, Boolean isUp, Boolean isRight) {
+		ArrayList<BoardSquare> finalListSquares = new ArrayList<BoardSquare>();
+		int xRef = piece.getCurrentX();
+		int yRef = piece.getCurrentY();
+		int x = 0 ; int y = 0;
+		Boolean pickBooleanEq = diagonalBooleanDecisionHelper(isUp, isRight, x, y, xRef, yRef);
+		for(x = 1, y = 1; pickBooleanEq; x++, y++) {
+			y=diagonalVerticalSignHelper(isUp, y);
+			x=diagonalHorizontalSignHelper(isRight,x);
+			pickBooleanEq = diagonalBooleanDecisionHelper(isUp, isRight, x, y, xRef, yRef);
+			BoardSquare possibleSquare = Controller.getButtonWithCoords(xRef + x, yRef + y, piece.getBoardSquare().getBoard());
+			if(possibleSquare!=null) {
+				//If piece in the way
+				if(possibleSquare.hasSpecificChessPiece()) {
+					//If opposition piece, add as target
+					if(possibleSquare.getSpecificChessPiece().getPlayer() != currentPlayer) {
+						finalListSquares.add(possibleSquare);
+						break;
+					}
+					//If own piece, don't add as option
+					else {
+						break;
+					}
+				}
+				//Else add empty spot as option
+				else {
+					finalListSquares.add(possibleSquare);
+				}
+			}
+			y=diagonalVerticalSignHelper(isUp, y);
+			x=diagonalHorizontalSignHelper(isRight,x);
+		}
+		return finalListSquares;
+	}
+	
+	//Method to find all valid moves for a straight line
 	public static ArrayList<BoardSquare> validStraightLineMoves(SpecificChessPiece piece, Boolean isUpDown, ArrayList<BoardSquare> squares, Player currentPlayer) {
 		ArrayList<BoardSquare> finalListSquares = new ArrayList<BoardSquare>();
 		BoardSquare viableSquare;
@@ -123,7 +204,7 @@ public class Controller {
 		return finalListSquares;
 	}
 
-
+	//Method to find all valid moves for a given pawn
 	public static ArrayList<BoardSquare> validPawnMoves(SpecificChessPiece piece, Player currentPlayer, Chess chess) {
 		ArrayList<BoardSquare> finalListSquares = new ArrayList<BoardSquare>();
 		int startingPos = 7; int yOffset = -1;
