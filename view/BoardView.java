@@ -24,6 +24,7 @@ import model.SpecificChessPiece;
 import controller.Controller;
 
 public class BoardView extends JFrame {
+	//Initialize global variables
 	Board board = new Board();
 	ArrayList<BoardSquare> squares = new ArrayList<BoardSquare>();
 	Chess chess = board.getChess();
@@ -34,6 +35,7 @@ public class BoardView extends JFrame {
 	Boolean pieceSelected = false; 
 	SpecificChessPiece selectedPiece;
 
+	//Add HashMaps and Arrays
 	HashMap<JButton, BoardSquare> tiles = new HashMap<JButton, BoardSquare>();
 	HashMap<BoardSquare, JButton> buttons = new HashMap<BoardSquare, JButton>(); 
 	ArrayList<JButton> buttonList = new ArrayList<JButton>();
@@ -53,7 +55,6 @@ public class BoardView extends JFrame {
 		setPieces();
 		refreshData();
 	}
-	
 	
 	//Method to Set Pieces for Players
 	private void setPieces() {
@@ -127,7 +128,8 @@ public class BoardView extends JFrame {
 		}
 
 	};
-	//Highlight selected piece
+	
+	//Highlight selected piece in yellow and show options
 	private void highlightOptions(JButton selectedButton) {
 		selectedButton.setBackground(Color.YELLOW);
 		pieceSelected = true;
@@ -176,7 +178,7 @@ public class BoardView extends JFrame {
 		}
 	}
 
-	//Add text and color viable squares
+	//Add text and color viable squares in green
 	private void paintSelect() {
 		for(JButton button: validButtons) {
 			button.setBackground(Color.GREEN);
@@ -192,7 +194,7 @@ public class BoardView extends JFrame {
 		}
 	}
 
-	//Logic for valid movements
+	//Logic for valid movements corresponding to piece selected
 	private void moveAlgorithm(SpecificChessPiece piece) {
 		switch(piece.getChessPieceGeneral().getName()) {
 		case "Pawn":
@@ -210,9 +212,17 @@ public class BoardView extends JFrame {
 		case "Knight":
 			validKnightMoves(piece);
 			break;
+		case "King":
+			validKingMoves(piece);
 		}
 	}
+	
+	//Method to find all valid king moves
+	private void validKingMoves(SpecificChessPiece piece) {
+		addToValidButtons(Controller.validKingMoves(piece, currentPlayer));
+	}
 
+	//Method to find all valid knight moves
 	private void validKnightMoves(SpecificChessPiece piece) {	
 		addToValidButtons(Controller.validKnightMoves(piece, currentPlayer));
 	}	

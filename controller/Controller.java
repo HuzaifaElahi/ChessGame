@@ -24,7 +24,6 @@ public class Controller {
 				return square;
 			}
 		}
-		System.out.println("NO SUCH SQUARE");
 		return null;
 	}
 
@@ -33,7 +32,6 @@ public class Controller {
 		if(boardSquare.hasSpecificChessPiece()) {
 			return boardSquare.getSpecificChessPiece().getPlayer();
 		}
-		System.out.println("NO PLAYER");
 		return null;
 	}
 
@@ -264,6 +262,7 @@ public class Controller {
 		return finalListSquares;
 	}
 	
+	//Method to find all valid moves for a given knight
 	public static ArrayList<BoardSquare> validKnightMoves(SpecificChessPiece piece, Player currentPlayer) {	
 		ArrayList<BoardSquare> finalList = new ArrayList<BoardSquare>();
 		finalList.addAll(validKnightMovesHelper(piece.getCurrentX(), piece.getCurrentY(), 1, 2, piece.getBoardSquare().getBoard(), currentPlayer));
@@ -275,10 +274,12 @@ public class Controller {
 	private static ArrayList<BoardSquare> validKnightMovesHelper(int templateX, int templateY, int offsetX, int offsetY, Board board, Player currentPlayer){
 		ArrayList<BoardSquare> list = new ArrayList<>();
 		ArrayList<BoardSquare> finalListSquares = new ArrayList<>();
+		//Add all possibilities to list
 		list.add(Controller.getButtonWithCoords(templateX+offsetX, templateY+offsetY, board));
 		list.add(Controller.getButtonWithCoords(templateX+offsetX, templateY-offsetY, board));
 		list.add(Controller.getButtonWithCoords(templateX-offsetX, templateY+offsetY, board));
 		list.add(Controller.getButtonWithCoords(templateX-offsetX, templateY-offsetY, board));
+		//Check list
 		for(BoardSquare possibleSquare: list) {
 			if(possibleSquare!=null) {
 				//If piece in the way
@@ -297,6 +298,13 @@ public class Controller {
 				}
 			}
 		}
+		//Return final list of options and targets
 		return finalListSquares;
+	}
+
+	//Method to find valid moves for a given king
+	public static ArrayList<BoardSquare> validKingMoves(SpecificChessPiece piece, Player currentPlayer) {
+		
+		return null;
 	}
 }
