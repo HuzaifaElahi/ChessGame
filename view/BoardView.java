@@ -207,16 +207,8 @@ public class BoardView extends JFrame {
 		case "Queen":
 			validQueenMoves(piece);
 			break;
-		case "Knight":
-			validKnightMoves(piece);
-			break;
 		}
 	}
-
-	private void validKnightMoves(SpecificChessPiece piece) {
-		
-	}
-
 
 	//Method to find all valid pawn moves
 	private void validPawnMoves(SpecificChessPiece piece) {
