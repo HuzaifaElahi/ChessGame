@@ -190,7 +190,7 @@ public class BoardView extends JFrame {
 				else {
 					color = "white";
 				}
-				String fileName = "C:\\Users\\Huzaifa\\Downloads\\" + square.getSpecificChessPiece().getChessPieceGeneral().getName() + "-" + color + ".png";
+				String fileName = "C:\\Users\\Huzaifa\\eclipse-workspace\\chess\\src\\resources\\" + square.getSpecificChessPiece().getChessPieceGeneral().getName() + "-" + color + ".png";
 				button.setIcon(new ImageIcon(fileName));
 			}
 			else {
