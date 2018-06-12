@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -55,7 +56,7 @@ public class BoardView extends JFrame {
 		setPieces();
 		refreshData();
 	}
-	
+
 	//Method to Set Pieces for Players
 	private void setPieces() {
 		initPieces(player1);	
@@ -128,7 +129,7 @@ public class BoardView extends JFrame {
 		}
 
 	};
-	
+
 	//Highlight selected piece in yellow and show options
 	private void highlightOptions(JButton selectedButton) {
 		selectedButton.setBackground(Color.YELLOW);
@@ -148,7 +149,6 @@ public class BoardView extends JFrame {
 		tiles.get(newButton).setSpecificChessPiece(selectedPiece);
 		selectedPiece.setCurrentX(tiles.get(newButton).getX());
 		selectedPiece.setCurrentY(tiles.get(newButton).getY());
-		newButton.setText(selectedPiece.getChessPieceGeneral().getName());
 		selectedPiece.setPlayer(currentPlayer);
 		pieceSelected = false;
 		refreshData();
@@ -178,6 +178,27 @@ public class BoardView extends JFrame {
 		}
 	}
 
+	//Set icons
+	private void setIcons() {
+		for(JButton button : buttonList) {
+			BoardSquare square = tiles.get(button);
+			if(square.hasSpecificChessPiece()) {
+				String color = "";
+				if(square.getSpecificChessPiece().getPlayer() == player1) {
+					color = "black";
+				}
+				else {
+					color = "white";
+				}
+				String fileName = "C:\\Users\\Huzaifa\\Downloads\\" + square.getSpecificChessPiece().getChessPieceGeneral().getName() + "-" + color + ".png";
+				button.setIcon(new ImageIcon(fileName));
+			}
+			else {
+				button.setIcon(null);
+			}
+		}
+	}
+
 	//Add text and color viable squares in green
 	private void paintSelect() {
 		for(JButton button: validButtons) {
@@ -185,11 +206,7 @@ public class BoardView extends JFrame {
 		}
 		for(JButton button: buttonList) {
 			if(tiles.get(button).hasSpecificChessPiece()) {
-				button.setText(tiles.get(button).getSpecificChessPiece().getChessPieceGeneral().getName());
 				button.setToolTipText(Controller.getPlayerByButton(tiles.get(button)).getName());
-			}
-			else {
-				button.setText(" ");
 			}
 		}
 	}
@@ -216,7 +233,7 @@ public class BoardView extends JFrame {
 			validKingMoves(piece);
 		}
 	}
-	
+
 	//Method to find all valid king moves
 	private void validKingMoves(SpecificChessPiece piece) {
 		addToValidButtons(Controller.validKingMoves(piece, currentPlayer));
@@ -248,14 +265,14 @@ public class BoardView extends JFrame {
 		addToValidButtons(Controller.diagonalMove(piece, currentPlayer, false, false));
 
 	}
-	
+
 	//Method to find all valid Queen moves
 	private void validQueenMoves(SpecificChessPiece piece) {
 		//Use existing methods for bishop and castle as queen is capable of both simultaneously
 		validBishopMoves(piece);
 		validCastleMoves(piece);
 	}
-	
+
 	//Method to add all squares to valid buttons
 	private void addToValidButtons(ArrayList<BoardSquare> targetSquares) {
 		for(BoardSquare square : targetSquares) {
@@ -266,6 +283,7 @@ public class BoardView extends JFrame {
 	//Re-populate data
 	private void refreshData() {
 		resetSelected();
+		setIcons();
 		validButtons.clear();
 		changePlayer();
 		paintSelect();
